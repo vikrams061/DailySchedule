@@ -1,0 +1,32 @@
+{
+  "name": "timetable-parser-prototype",
+  "version": "0.1.0",
+  "description": "Prototype: OCR + heuristic timetable parser (Fastify + TypeScript)",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc -p .",
+    "start": "node dist/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^1.5.0",
+    "fastify": "^4.23.0",
+    "git": "^0.1.5",
+    "mammoth": "^1.4.20",
+    "pdf2pic": "^3.2.0",
+    "tesseract.js": "^4.1.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@fastify/multipart": "^8.3.0",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.2",
+    "@types/uuid": "^9.0.2",
+    "jest": "^29.6.1",
+    "jest-environment-node": "^29.6.1",
+    "ts-jest": "^29.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.0"
+  }
+}
