@@ -9,12 +9,15 @@ import { parseTimetableFromText, parseTimetableFromOcr } from '../utils/parser';
 import { callLlmMapping } from '../utils/llm';
 import mammoth from 'mammoth';
 import { execFile } from 'child_process';
+import { FastifyRequest } from 'fastify';
+import { MultipartFile, Multipart } from '@fastify/multipart';
 
 async function routes(fastify: FastifyInstance, opts: any) {
   fastify.post('/parse-timetable', async function (req, reply) {
     // accept multipart
-    const parts = req.isMultipart() ? req.multipart() : null;
-    if (!parts) {
+
+const reqWithMultipart = req as FastifyRequest & Multipart;
+const parts = reqWithMultipart.isMultipart() ? reqWithMultipart.parts() : null;    if (!parts) {
       return reply.status(400).send({ error: 'Request must be multipart/form-data' });
     }
 
@@ -62,7 +65,7 @@ async function routes(fastify: FastifyInstance, opts: any) {
             });
           });
         } catch (err) {
-          fastify.log.error('pdftoppm conversion failed', err instanceof Error ? err.message : String(err));
+          fastify.log.error({ msg: 'pdftoppm conversion failed', err });
           throw err;
         }
         const imagePath = outputPrefix + '.png';
@@ -83,7 +86,7 @@ async function routes(fastify: FastifyInstance, opts: any) {
     try {
       await fs.promises.writeFile(path.join(uploadDir, 'ocr.json'), JSON.stringify(ocrResult, null, 2), 'utf8');
     } catch (err) {
-      fastify.log.warn('Failed to save ocr.json', err instanceof Error ? err.message : String(err));
+      fastify.log.warn({ msg: 'Failed to save ocr.json', err });
     }
 
     // Heuristic parse using positional OCR when available
@@ -106,7 +109,7 @@ async function routes(fastify: FastifyInstance, opts: any) {
         }
       }
     } catch (err) {
-      fastify.log.warn('LLM mapping failed', err instanceof Error ? err.message : String(err));
+      fastify.log.warn({ msg: 'LLM mapping failed', err });
     }
 
     return reply.send({ upload_id: uploadId, timetable });

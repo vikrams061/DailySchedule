@@ -10,14 +10,7 @@ function isTimetableLike(obj: any) {
   return true;
 }
 
-/**
- * Call an LLM (OpenAI) to map OCR data into the timetable schema.
- * Options:
- * - force: boolean - if true, attempt mapping even if candidate exists
- * - model: string - model id to use (default gpt-4)
- * - maxTokens: number
- * Returns parsed JSON { timetable: ... } or null on missing key/error/invalid response.
- */
+
 export async function callLlmMapping(payload: { ocrText?: string; ocrWords?: any[]; candidate?: any }, opts: LlmOpts = {}, flags: { force?: boolean; model?: string; maxTokens?: number } = {}) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return null;

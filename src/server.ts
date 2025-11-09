@@ -1,10 +1,20 @@
 import Fastify from 'fastify';
-import multipart from 'fastify-multipart';
+import multipart from '@fastify/multipart';
 import parseRoute from './routes/parse';
+import cors from '@fastify/cors';
 
 const server = Fastify({ logger: true });
 
-server.register(multipart);
+server.register(cors, {
+  origin: true // or 'http://localhost:5173'
+});
+
+server.register(multipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024 // ✅ Allow up to 10MB
+  }
+});
+
 server.register(parseRoute, { prefix: '/api/v1' });
 
 const start = async () => {
@@ -17,4 +27,4 @@ const start = async () => {
   }
 };
 
-start();
+start(); // ✅ Now all plugins are registered before this
